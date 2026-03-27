@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
-import Login from "./components/login";
+import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import Survey from "./components/Survey"; // 🔥 TAMBAH INI
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,6 +15,14 @@ function App() {
         <Route
           path="/login"
           element={<Login onLogin={() => setIsAuthenticated(true)} />}
+        />
+
+        
+        <Route
+          path="/survey"
+          element={
+            isAuthenticated ? <Survey /> : <Navigate to="/login" />
+          }
         />
 
         
