@@ -3,57 +3,99 @@ import { useState } from "react";
 function WaterTracker() {
   const [waterData, setWaterData] = useState([]);
   const [amount, setAmount] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // 🔥 dropdown state
 
   const handleAddWater = () => {
-    if (!amount) return;
+    if (!amount || amount <= 0) return;
 
     const newData = {
       id: Date.now(),
-      amount,
-      time: new Date().toLocaleString(),
+      amount: Number(amount),
+      time: new Date().toLocaleTimeString(),
     };
 
-    setWaterData([...waterData, newData]);
+    setWaterData([newData, ...waterData]);
     setAmount("");
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded-xl">
-      <h2 className="text-xl font-bold mb-4">Water Tracker 💧</h2>
+    <div className="bg-[#EAF4F4] min-h-screen flex items-center justify-center p-4">
 
-      
-      <div className="flex flex-col gap-2 mb-4">
-        <input
-          type="number"
-          placeholder="Jumlah air (ml)"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="border p-2 rounded"
-        />
+      {/* CARD */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5">
 
-        <button
-          onClick={handleAddWater}
-          className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+        {/* HEADER (CLICKABLE) */}
+        <div 
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center justify-between cursor-pointer"
         >
-          Add Water
-        </button>
-      </div>
-
-      
-      <div>
-        {waterData.length === 0 ? (
-          <p className="text-gray-500">Belum ada data minum</p>
-        ) : (
-          waterData.map((item) => (
-            <div
-              key={item.id}
-              className="border p-2 rounded mb-2 flex justify-between"
-            >
-              <span>{item.amount} ml</span>
-              <span className="text-sm text-gray-500">{item.time}</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 text-lg">
+              💧
             </div>
-          ))
-        )}
+            <h2 className="text-lg font-semibold">Water Tracker</h2>
+          </div>
+
+          {/* ICON */}
+          <span
+            className={`transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          >
+            ⌄
+          </span>
+        </div>
+
+        {/* CONTENT (DROPDOWN) */}
+        <div
+          className={`transition-all duration-300 overflow-hidden ${
+            isOpen ? "max-h-[500px] mt-5" : "max-h-0"
+          }`}
+        >
+
+          {/* INPUT */}
+          <div className="flex gap-2 mb-5">
+            <input
+              type="number"
+              placeholder="Jumlah air (ml)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="flex-1 border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none p-2 rounded-lg"
+            />
+
+            <button
+              onClick={handleAddWater}
+              className="bg-blue-500 text-white px-4 rounded-lg hover:bg-blue-600 transition"
+            >
+              +
+            </button>
+          </div>
+
+          {/* LIST */}
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {waterData.length === 0 ? (
+              <div className="text-center text-gray-400 py-6">
+                Belum ada data minum
+              </div>
+            ) : (
+              waterData.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center bg-blue-50 p-3 rounded-lg"
+                >
+                  <span className="font-medium text-blue-700">
+                    {item.amount} ml
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {item.time}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+
+        </div>
+
       </div>
     </div>
   );

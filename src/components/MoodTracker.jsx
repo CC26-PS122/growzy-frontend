@@ -2,62 +2,116 @@ import { useState } from "react";
 
 function MoodTracker() {
   const [moodData, setMoodData] = useState([]);
-  const [mood, setMood] = useState("");
+  const [selectedMood, setSelectedMood] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // 🔥 dropdown state
+
+  const moods = [
+    { label: "Happy", emoji: "😄", color: "bg-yellow-100 text-yellow-600", ringColor: "ring-yellow-600" },
+    { label: "Sad", emoji: "😢", color: "bg-blue-100 text-blue-600", ringColor: "ring-blue-600" },
+    { label: "Angry", emoji: "😡", color: "bg-red-100 text-red-600", ringColor: "ring-red-600" },
+    { label: "Tired", emoji: "😴", color: "bg-purple-100 text-purple-600", ringColor: "ring-purple-600" },
+  ];
 
   const handleAddMood = () => {
-    if (!mood) return;
+    if (!selectedMood) return;
 
     const newData = {
       id: Date.now(),
-      mood,
-      time: new Date().toLocaleString(),
+      mood: selectedMood,
+      time: new Date().toLocaleTimeString(),
     };
 
-    setMoodData([...moodData, newData]);
-    setMood("");
+    setMoodData([newData, ...moodData]);
+    setSelectedMood("");
   };
 
   return (
-    <div className="p-4 bg-white shadow rounded-xl">
-      <h2 className="text-xl font-bold mb-4">Mood Tracker 😊</h2>
+    <div className="bg-[#EAF4F4] min-h-screen flex items-center justify-center p-4">
 
-      
-      <div className="flex flex-col gap-2 mb-4">
-        <select
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-          className="border p-2 rounded"
+      {/* CARD */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5">
+
+        {/* HEADER (CLICKABLE) */}
+        <div
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center justify-between cursor-pointer"
         >
-          <option value="">Pilih mood</option>
-          <option value="Senang 😄">Senang 😄</option>
-          <option value="Sedih 😢">Sedih 😢</option>
-          <option value="Marah 😡">Marah 😡</option>
-          <option value="Capek 😴">Capek 😴</option>
-        </select>
-
-        <button
-          onClick={handleAddMood}
-          className="bg-purple-500 text-white p-2 rounded hover:bg-purple-600"
-        >
-          Add Mood
-        </button>
-      </div>
-
-      
-      <div>
-        {moodData.length === 0 ? (
-          <p className="text-gray-500">Belum ada mood</p>
-        ) : (
-          moodData.map((item) => (
-            <div
-              key={item.id}
-              className="border p-2 rounded mb-2 flex justify-between"
-            >
-              <span>{item.mood}</span>
-              <span className="text-sm text-gray-500">{item.time}</span>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-full bg-pink-100 text-pink-600 text-lg">
+              😊
             </div>
-          ))
-        )}
+            <h2 className="text-lg font-semibold">Mood Tracker</h2>
+          </div>
+
+          {/* ICON */}
+          <span
+            className={`transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          >
+            ⌄
+          </span>
+        </div>
+
+        {/* CONTENT (DROPDOWN) */}
+        <div
+          className={`transition-all duration-300 overflow-hidden ${
+            isOpen ? "max-h-[600px] mt-5" : "max-h-0"
+          }`}
+        >
+
+          {/* MOOD PICKER */}
+          <div className="grid grid-cols-4 gap-3 mb-5">
+            {moods.map((m, i) => (
+              <button
+                key={i}
+                onClick={() => setSelectedMood(`${m.emoji} ${m.label}`)}
+                className={`p-3 rounded-xl flex flex-col items-center justify-center transition
+                  ${m.color}
+                  ${
+                    selectedMood === `${m.emoji} ${m.label}`
+                      ? `ring-2 ${m.ringColor} scale-105`
+                      : "opacity-70"
+                  }
+                `}
+              >
+                <span className="text-xl">{m.emoji}</span>
+                <span className="text-xs">{m.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* BUTTON */}
+          <button
+            onClick={handleAddMood}
+            className="w-full bg-pink-500 text-white p-2 rounded-lg hover:bg-pink-600 transition mb-4"
+          >
+            Save Mood
+          </button>
+
+          {/* LIST */}
+          <div className="space-y-2 max-h-60 overflow-y-auto">
+            {moodData.length === 0 ? (
+              <div className="text-center text-gray-400 py-6">
+                Belum ada mood
+              </div>
+            ) : (
+              moodData.map((item) => (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center bg-pink-50 p-3 rounded-lg"
+                >
+                  <span className="font-medium">{item.mood}</span>
+                  <span className="text-xs text-gray-500">
+                    {item.time}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
