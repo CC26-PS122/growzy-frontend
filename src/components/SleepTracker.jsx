@@ -1,70 +1,38 @@
-import { useState } from "react";
+import React from 'react';
 
-function SleepTracker() {
-  const [sleepData, setSleepData] = useState([]);
-  const [sleepStart, setSleepStart] = useState("");
-  const [sleepEnd, setSleepEnd] = useState("");
-
-  const handleAddSleep = () => {
-    if (!sleepStart || !sleepEnd) return;
-
-    const newData = {
-      id: Date.now(),
-      sleepStart,
-      sleepEnd,
-    };
-
-    setSleepData([...sleepData, newData]);
-    setSleepStart("");
-    setSleepEnd("");
-  };
-
+const SleepTracker = ({ isActive, onToggle }) => {
   return (
-    <div className="p-4 bg-white shadow rounded-xl">
-      <h2 className="text-xl font-bold mb-4">Sleep Tracker 🛌</h2>
-
+    <div className="bg-white/80 rounded-lg p-4 shadow-sm">
       
-      <div className="flex flex-col gap-2 mb-4">
-        <input
-          type="datetime-local"
-          value={sleepStart}
-          onChange={(e) => setSleepStart(e.target.value)}
-          className="border p-2 rounded"
-        />
-
-        <input
-          type="datetime-local"
-          value={sleepEnd}
-          onChange={(e) => setSleepEnd(e.target.value)}
-          className="border p-2 rounded"
-        />
-
-        <button
-          onClick={handleAddSleep}
-          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Add Sleep
-        </button>
+      <div 
+        className="flex items-center justify-between cursor-pointer"
+        onClick={onToggle}
+      >
+        <div className="flex items-center">
+          <div className="w-8 h-8 rounded-full bg-yellowaccent/30 text-yellowaccent flex items-center justify-center mr-3">
+            <i className="fas fa-moon"></i>
+          </div>
+          <div>
+            <h3 className="font-medium text-gray-800">Sleep Tracker</h3>
+            <p className="text-xs text-gray-500">Log your sleep time</p>
+          </div>
+        </div>
+        
+        <i className={fas fa-chevron-down text-gray-400 transition-transform ${isActive ? 'rotate-180' : ''}}></i>
       </div>
 
       
-      <div>
-        {sleepData.length === 0 ? (
-          <p className="text-gray-500">Belum ada data tidur</p>
-        ) : (
-          sleepData.map((item) => (
-            <div
-              key={item.id}
-              className="border p-2 rounded mb-2 flex flex-col"
-            >
-              <span>Start: {item.sleepStart}</span>
-              <span>End: {item.sleepEnd}</span>
-            </div>
-          ))
-        )}
-      </div>
+      {isActive && (
+        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+          <input
+            type="number"
+            placeholder="Enter hours"
+            className="w-full p-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+          />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default SleepTracker;
