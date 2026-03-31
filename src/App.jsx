@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import Login from "./components/login";
 import Dashboard from "./components/Dashboard";
-import Survey from "./components/Survey"; // 🔥 TAMBAH INI
+import Survey from "./components/Survey";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

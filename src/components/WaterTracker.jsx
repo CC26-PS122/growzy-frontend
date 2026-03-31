@@ -19,13 +19,13 @@ function WaterTracker() {
   };
 
   return (
-    <div className="bg-[#EAF4F4] min-h-screen flex items-center justify-center p-4">
+    <div className="bg-white flex items-center justify-center p-4">
 
       {/* CARD */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5">
+      <div className="w-full bg-white rounded-2xl shadow-lg p-5">
 
         {/* HEADER (CLICKABLE) */}
-        <div 
+        <div
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center justify-between cursor-pointer"
         >
@@ -38,9 +38,8 @@ function WaterTracker() {
 
           {/* ICON */}
           <span
-            className={`transition-transform duration-300 ${
-              isOpen ? "rotate-180" : ""
-            }`}
+            className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+              }`}
           >
             ⌄
           </span>
@@ -48,9 +47,8 @@ function WaterTracker() {
 
         {/* CONTENT (DROPDOWN) */}
         <div
-          className={`transition-all duration-300 overflow-hidden ${
-            isOpen ? "max-h-[500px] mt-5" : "max-h-0"
-          }`}
+          className={`transition-all duration-300 overflow-hidden ${isOpen ? "max-h-[500px] mt-5" : "max-h-0"
+            }`}
         >
 
           {/* INPUT */}

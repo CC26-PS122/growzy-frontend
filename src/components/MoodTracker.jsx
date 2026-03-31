@@ -26,10 +26,10 @@ function MoodTracker() {
   };
 
   return (
-    <div className="bg-[#EAF4F4] min-h-screen flex items-center justify-center p-4">
+    <div className="bg-white flex items-center justify-center p-4">
 
       {/* CARD */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-5">
+      <div className="w-full bg-white rounded-2xl shadow-lg p-5">
 
         {/* HEADER (CLICKABLE) */}
         <div
