@@ -26,7 +26,7 @@ function MoodTracker() {
   };
 
   return (
-    <div className="bg-white flex items-center justify-center p-4">
+    <div className="bg-transparent flex items-center justify-center p-4">
 
       {/* CARD */}
       <div className="w-full bg-white rounded-2xl shadow-lg p-5">

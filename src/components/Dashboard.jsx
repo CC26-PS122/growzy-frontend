@@ -17,14 +17,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen font-sans">
+    <div className="bg-[#D2EEFF] min-h-screen font-sans">
       
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Hello, Username!</h1>
         </div>
-
         
         <div className="flex justify-center mb-8">
           <div className="bg-transparent rounded-full px-2 py-1 flex items-center shadow-sm">
@@ -43,7 +42,7 @@ const Dashboard = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <div className="bg-transparent rounded-xl p-0 shadow-sm">
+          <div className="rounded-xl p-8 shadow-sm bg-white/50">
             <div className="flex flex-col items-center mb-4">
               <p className="text-gray-600 mb-2">Date</p>
               <div className="w-20 h-20 rounded-full bg-gray-400 flex items-center justify-center mb-2">
@@ -71,7 +70,7 @@ const Dashboard = () => {
           
           <div className="md:col-span-2 space-y-6">
             
-            <div className="bg-transparent rounded-xl p-0 shadow-sm">
+            <div className="bg-white/50 rounded-xl p-4 px-10 shadow-sm">
               <h2 className="text-lg font-semibold text-gray-800 mb-4 text-center">Weekly Habit Progress</h2>
               <div className="flex justify-between mb-4">
                 {weekDays.map((day, idx) => (
@@ -82,7 +81,7 @@ const Dashboard = () => {
                 ))}
               </div>
               <div className="flex justify-center">
-                <button className="bg-primary text-white px-4 py-1 rounded-full text-sm shadow-sm">
+                <button className="bg-[#004A78] text-white px-4 py-1 rounded-full text-sm shadow-sm">
                   View Monthly
                 </button>
               </div>
