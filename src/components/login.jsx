@@ -17,7 +17,7 @@ function Login({ onLogin }) {
     
     if (email === "admin@gmail.com" && password === "1234") {
       onLogin(); 
-      navigate("/survey");
+      navigate("/dashboard");
     } else {
       alert("Email atau password salah!");
     }
