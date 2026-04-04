@@ -24,7 +24,7 @@ function Survey() {
 
     console.log("Survey Data:", data);
 
-    navigate("/login");
+    navigate("/features");
   };
 
   return (
