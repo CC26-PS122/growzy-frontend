@@ -5,8 +5,77 @@ function FeatureIntro() {
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
 
+  const MIN_WATER = 500;
+  const MAX_WATER = 5000;
+  const [waterGoal, setWaterGoal] = useState(2000); // default ml
+
+  const steps = [
+    {
+      type: "info",
+      icon: <img src="/images/sleepy_char.svg" className="w-16 h-16" />,
+      text: "Meet your little buddy. They'll change based on your habit",
+      button: "Tap to say hi!",
+    },
+    {
+      type: "bubble",
+      icon: <img src="/images/happy_char.svg" className="w-16 h-16" />,
+      text: "Hi there! This is me when you keep up with all your habits",
+      button: "Continue",
+    },
+    {
+      type: "bubble",
+      icon: <img src="/images/happy_char.svg" className="w-16 h-16" />,
+      text: "Now, let's see what affect how I look",
+      button: "Continue",
+    },
+    {
+      type: "info",
+      text: <p>We'll track how long you <b>sleep</b> each night.</p>,
+      button: "Continue",
+    },
+    {
+      type: "info",
+      icon: <img src="/images/sleeptracker.svg" className="w-16 h-16" />,
+      text: "Getting around 8 hours of sleep helps your character stay looking good",
+      button: "Got it!",
+    },
+    {
+      type: "info",
+      text: <p>We’ll help you track your <b>water intake</b></p>,
+      button: "Continue",
+    },
+    {
+      type: "input",
+      icon: <img src="/images/watertracker.png" className="h-16" />,
+      text: "Set your daily water goal",
+      button: "Set Goal",
+    },
+    {
+      type: "info",
+      text: <p>Alright! Your water goal is set.</p>,
+      button: "Continue",
+    },
+    {
+      type: "info",
+      icon: <img src="/images/moodtracker.svg" className="w-16 h-16" />,
+      text: "Take care of your mood to keep your character happy",
+      button: "Got it!",
+    },
+    {
+      type: "info",
+      text: "Well done! Now, let's start your journey",
+      button: "Continue",
+    },
+  ];
+
+  const current = steps[step];
+
   const nextStep = () => {
-    if (step < 10) {
+    if (current.type === "input") {
+      localStorage.setItem("waterGoal", waterGoal);
+    }
+
+    if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
       navigate("/login");
@@ -16,120 +85,89 @@ function FeatureIntro() {
   return (
     <div className="min-h-screen flex flex-col justify-between items-center bg-blue-100 p-6 text-center">
 
-      
-      <div className="flex flex-col items-center justify-center flex-1 gap-4">
 
-        
-        {step === 0 && (
-          <p className="text-lg max-w-xs">
-            Got it! Now let's see how we can help you
-          </p>
-        )}
+      <div className="flex-1 flex items-center justify-center w-full">
+        <div className="bg-white rounded-2xl p-8 shadow-md max-w-md w-full flex flex-col items-center gap-6">
 
-        
-        {step === 1 && (
-          <>
-            <div className="text-6xl">🌚</div>
-            <p className="text-lg max-w-xs">
-              Meet your little buddy. They'll change based on your habit
-            </p>
-          </>
-        )}
+          {/* === BUBBLE MODE === */}
+          {current.type === "bubble" ? (
+            <div className="flex flex-col items-center gap-4">
 
-        
-        {step === 2 && (
-          <>
-            <div className="text-6xl">😀</div>
-            <p className="text-lg max-w-xs">
-              Hi there! This is me when you keep up with all your habits
-            </p>
-          </>
-        )}
+              {/* Bubble Chat */}
+              <div className="bg-gray-100 px-4 py-2 rounded-xl text-sm text-gray-700 relative">
+                {current.text}
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-100 rotate-45"></div>
+              </div>
 
-        
-        {step === 3 && (
-          <>
-            <div className="text-6xl">😀</div>
-            <p className="text-lg max-w-xs">
-              Now, let's see what affect how I look
-            </p>
-          </>
-        )}
+              {/* Character */}
+              {current.icon}
 
-        
-        {step === 4 && (
-          <p className="text-lg max-w-xs">
-            We'll track how long you sleep each night.
-          </p>
-        )}
+            </div>
+          ) : (
+            <>
+              {/* === NORMAL MODE === */}
+              {current.icon && (
+                <div className="w-20 h-20 bg-[#F0F9FF] rounded-full flex items-center justify-center">
+                  {current.icon}
+                </div>
+              )}
 
-        
-        {step === 5 && (
-          <>
-            <div className="text-6xl">🌜</div>
-            <p className="text-lg max-w-xs">
-              Getting around 8 hours of sleep helps your character stay looking good
-            </p>
-          </>
-        )}
+              <p className="text-lg text-[#1D3557] max-w-xs">
+                {current.text}
+              </p>
+            </>
+          )}
 
-        
-        {step === 6 && (
-          <p className="text-lg max-w-xs">
-            We'll help you track your water intake
-          </p>
-        )}
+          {current.type === "input" && (
+            <div className="flex flex-col items-center gap-4 mt-4">
 
-        
-        {step === 7 && (
-          <>
-            <div className="text-6xl">💧</div>
-            <p className="text-lg max-w-xs">
-              Set your daily water goal
-            </p>
-          </>
-        )}
+              {/* COUNTER */}
+              <div className="flex items-center gap-6">
 
-        
-        {step === 8 && (
-          <p className="text-lg max-w-xs">
-            Alright! Your water goal is set.
-          </p>
-        )}
+                <button
+                  onClick={() =>
+                    setWaterGoal((prev) => Math.max(MIN_WATER, prev - 250))
+                  }
+                  disabled={waterGoal <= MIN_WATER}
+                  className="w-10 h-10 rounded-full bg-gray-200 disabled:opacity-30"
+                >
+                  −
+                </button>
 
-        
-        {step === 9 && (
-          <>
-            <div className="text-6xl">😊</div>
-            <p className="text-lg max-w-xs">
-              Take care of your mood to keep your character happy
-            </p>
-          </>
-        )}
+                <div className="text-2xl font-semibold text-[#1D3557]">
+                  {waterGoal} mL
+                </div>
 
-       
-        {step === 10 && (
-          <p className="text-lg font-semibold max-w-xs">
-            Well done! Now, let's start your journey
-          </p>
-        )}
+                <button
+                  onClick={() =>
+                    setWaterGoal((prev) => Math.min(MAX_WATER, prev + 250))
+                  }
+                  disabled={waterGoal >= MAX_WATER}
+                  className="w-10 h-10 rounded-full bg-[#004E7C] text-white disabled:opacity-30"
+                >
+                  +
+                </button>
 
+              </div>
+
+              {/* HINT */}
+              <p className="text-xs text-gray-400">
+                Adjust based on your daily needs
+              </p>
+
+            </div>
+          )}
+
+        </div>
       </div>
 
-      
+
       <button
         onClick={nextStep}
         className="bg-blue-500 text-white px-6 py-3 rounded-full w-full max-w-xs"
+        disabled={current.type === "input" && !waterGoal}
       >
-        {step === 1
-          ? "Tap to say hi!"
-          : step === 5
-          ? "Got it!"
-          : step === 7
-          ? "Set Goal"
-          : step === 9
-          ? "Got it!"
-          : "Continue"}
+        {current.button}
       </button>
 
     </div>

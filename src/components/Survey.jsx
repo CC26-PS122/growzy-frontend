@@ -23,7 +23,7 @@ function Survey() {
 
   const handleFinish = () => {
     localStorage.setItem("surveyData", JSON.stringify(answers));
-    navigate("/register");
+    navigate("/features");
   };
 
   const handleBack = () => {
