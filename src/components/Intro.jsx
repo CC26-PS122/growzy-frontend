@@ -1,76 +1,65 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Intro() {
-  const [step, setStep] = useState(0);
+  const [animate, setAnimate] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
   const navigate = useNavigate();
 
-  const nextStep = () => {
-    if (step < 3) {
-      setStep(step + 1);
-    } else {
-      navigate("/survey"); 
-    }
+  useEffect(() => {
+    // mulai animasi shrink
+    const timer1 = setTimeout(() => {
+      setAnimate(true);
+    }, 1500);
+
+    // munculin logo sedikit setelah shrink mulai
+    const timer2 = setTimeout(() => {
+      setShowLogo(true);
+    }, 1700);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  const handleClick = () => {
+    localStorage.setItem("hasSeenIntro", "true");
+    navigate("/survey");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 text-white">
+    <div
+      onClick={handleClick}
+      className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 text-white cursor-pointer relative overflow-hidden"
+    >
 
-      {step === 0 && (
-        <div className="text-center">
-          <div className="text-6xl mb-4">🙂</div>
-        </div>
+      {/* CHARACTER */}
+      <div
+        className={`absolute transition-all duration-700 ease-out shadow-lg shadow-white/40 rounded-full
+        flex items-center justify-center
+          ${animate
+            ? "scale-[0.2] -translate-x-6 -translate-y-0 border-8 border-white p-1 rounded-full shadow-md"
+            : "scale-150 border-0"
+          }`}
+      >
+        <img src="/images/moodtracker.svg" alt="character" />
+      </div>
+
+      {/* LOGO (muncul belakangan) */}
+      <div
+        className={`transition-opacity duration-700
+        ${showLogo ? "opacity-100" : "opacity-0"}`}
+      >
+        <img src="/images/growzy_logo.svg" alt="Growzy Logo" width={230} />
+      </div>
+
+      {/* TAP TEXT */}
+      {showLogo && (
+        <p className="absolute bottom-10 text-sm opacity-70 animate-pulse">
+          Tap anywhere to continue
+        </p>
       )}
-
-      {step === 1 && (
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Growzy</h1>
-        </div>
-      )}
-
-      {step === 2 && (
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold mb-2">
-            Welcome to Growzy!
-          </h1>
-          <p className="text-sm text-blue-100 mb-4">
-            Growzy will help you to track your sleep,
-            drink, and mood everyday
-          </p>
-
-          <button
-            onClick={nextStep}
-            className="bg-white text-blue-600 px-6 py-2 rounded-full"
-          >
-            Continue
-          </button>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div className="text-center max-w-md">
-          <h1 className="text-xl mb-2">
-            Before we start, we'd love to learn a bit about you:
-          </h1>
-
-          <button
-            onClick={nextStep}
-            className="bg-white text-blue-600 px-6 py-2 rounded-full mt-4"
-          >
-            Continue
-          </button>
-        </div>
-      )}
-
-      {step < 2 && (
-        <button
-          onClick={nextStep}
-          className="absolute bottom-10 text-sm opacity-70"
-        >
-          Tap to continue →
-        </button>
-      )}
-
     </div>
   );
 }

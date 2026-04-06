@@ -69,6 +69,7 @@ function Login({ onLogin }) {
           type="email"
           placeholder="Email"
           value={email}
+          name=""
           onChange={(e) => setEmail(e.target.value)}
           className="w-full border border-gray-300 p-3 rounded-lg mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
@@ -78,6 +79,7 @@ function Login({ onLogin }) {
           type="password"
           placeholder="Password"
           value={password}
+          name="password"
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-gray-300 p-3 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
