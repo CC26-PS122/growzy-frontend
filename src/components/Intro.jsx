@@ -9,7 +9,7 @@ function Intro() {
     if (step < 3) {
       setStep(step + 1);
     } else {
-      navigate("/survey"); // pindah ke survey
+      navigate("/survey"); 
     }
   };
 
