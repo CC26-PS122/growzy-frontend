@@ -71,7 +71,7 @@ function Survey() {
   const currentStep = stepsConfig[step];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#D2EEFF]">
+    <div className="min-h-screen flex items-center justify-center bg-[#D2EEFF] px-4 sm:px-6 pb-6">
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -79,7 +79,7 @@ function Survey() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -40 }}
           transition={{ duration: 0.3 }}
-          className="w-full text-center relative"
+          className="w-full max-w-md sm:max-w-lg text-center relative"
         >
 
           {/* {step > 1 && (
@@ -93,11 +93,11 @@ function Survey() {
 
           {/* STEP 0: WELCOME */}
           {step === 0 && (
-            <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
-              <h1 className="text-3xl font-semibold text-[#1D3557] mb-2">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] rounded-xl">
+              <h1 className="text-2xl sm:text-3xl font-semibold text-[#1D3557] mb-2">
                 Welcome to Growzy!
               </h1>
-              <p className="text-[#457B9D] mb-8 max-w-xs">
+              <p className="text-[#457B9D] mb-8 max-w-xs sm:max-w-sm">
                 Growzy will help you to track your sleep, drink, and mood everyday
               </p>
               <button
@@ -111,7 +111,7 @@ function Survey() {
 
           {/* STEP 1: PRE */}
           {step === 1 && (
-            <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] rounded-xl">
               <p className="text-sm text-gray-400 mb-2">
                 Step {step} of 5
               </p>
@@ -145,7 +145,7 @@ function Survey() {
 
           {/* STEP 5: DONE */}
           {step === 5 && (
-            <div className="flex flex-col items-center justify-center min-h-[400px] p-6">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] p-6">
               <p className="text-sm text-gray-400 mb-2">
                 Step {step} of 5
               </p>

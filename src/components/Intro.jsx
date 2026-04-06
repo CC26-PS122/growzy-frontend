@@ -1,27 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function Intro() {
-  const [animate, setAnimate] = useState(false);
-  const [showLogo, setShowLogo] = useState(false);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // mulai animasi shrink
-    const timer1 = setTimeout(() => {
-      setAnimate(true);
-    }, 1500);
-
-    // munculin logo sedikit setelah shrink mulai
-    const timer2 = setTimeout(() => {
-      setShowLogo(true);
-    }, 1700);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, []);
 
   const handleClick = () => {
     localStorage.setItem("hasSeenIntro", "true");
@@ -35,31 +16,33 @@ function Intro() {
     >
 
       {/* CHARACTER */}
-      <div
-        className={`absolute transition-all duration-700 ease-out shadow-lg shadow-white/40 rounded-full
-        flex items-center justify-center
-          ${animate
-            ? "scale-[0.2] -translate-x-6 -translate-y-0 border-8 border-white p-1 rounded-full shadow-md"
-            : "scale-150 border-0"
-          }`}
+      <motion.div
+        initial={{ scale: 1.5   }}
+        animate={{ scale: 0.2, x: -24, y: 0 }}
+        transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+        className="absolute flex items-center justify-center border-8 border-white p-1 rounded-full shadow-md shadow-white/40"
       >
         <img src="/images/moodtracker.svg" alt="character" />
-      </div>
+      </motion.div>
 
       {/* LOGO (muncul belakangan) */}
-      <div
-        className={`transition-opacity duration-700
-        ${showLogo ? "opacity-100" : "opacity-0"}`}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.7 }}
       >
         <img src="/images/growzy_logo.svg" alt="Growzy Logo" width={230} />
-      </div>
+      </motion.div>
 
       {/* TAP TEXT */}
-      {showLogo && (
-        <p className="absolute bottom-10 text-sm opacity-70 animate-pulse">
-          Tap anywhere to continue
-        </p>
-      )}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.7 }}
+        transition={{ delay: 2.2 }}
+        className="absolute bottom-10 text-sm animate-pulse"
+      >
+        Tap anywhere to continue
+      </motion.p>
     </div>
   );
 }

@@ -11,7 +11,7 @@ function QuestionCard({
     onBack,
 }) {
     return (
-        <div className="relative w-full max-w-xl mx-auto bg-white rounded-2xl px-6 pt-16 pb-8 shadow-md text-center">
+        <div className="relative w-full bg-white rounded-2xl px-5 sm:px-6 pt-14 sm:pt-16 pb-6 sm:pb-8 shadow-md text-center">
 
             {/* BACK BUTTON */}
             <button
@@ -23,13 +23,13 @@ function QuestionCard({
 
             {/* FLOATING ICON */}
             <div className="absolute -top-10 left-1/2 -translate-x-1/2">
-                <div className="w-20 h-20 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white shadow-lg flex items-center justify-center border border-gray-100">
                     {icon}
                 </div>
             </div>
 
             {/* QUESTION */}
-            <h2 className="text-[22px] font-medium text-[#1D3557] mb-8 leading-snug">
+            <h2 className="text-lg sm:text-[22px] font-medium text-[#1D3557] mb-8 leading-snug">
                 {question}
             </h2>
 
@@ -42,7 +42,7 @@ function QuestionCard({
                         <button
                             key={opt}
                             onClick={() => onSelect(opt)}
-                            className={`w-full flex items-center px-4 py-3 rounded-full transition-all duration-200 border
+                            className={`w-full flex items-center px-3 sm:px-4 py-3 rounded-full transition-all duration-200 border
                             
                             ${isSelected
                                     ? "border-[#004E7C] bg-[#E6F4FF]"
@@ -52,7 +52,7 @@ function QuestionCard({
                         >
                             {/* DOT */}
                             <div
-                                className={`w-5 h-5 rounded-full mr-4 transition-all
+                                className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full mr-4 transition-all
                                 ${isSelected
                                         ? "bg-[#004E7C]"
                                         : "bg-[#D6EFFF]"
@@ -61,7 +61,7 @@ function QuestionCard({
 
                             {/* TEXT */}
                             <span
-                                className={`text-base
+                                className={`text-sm sm:text-base
                                 ${isSelected
                                         ? "text-[#004E7C] font-medium"
                                         : "text-gray-500"
@@ -78,7 +78,7 @@ function QuestionCard({
             <button
                 onClick={onNext}
                 disabled={!selectedOption}
-                className={`w-full py-3 rounded-full text-lg font-medium transition-all
+                className={`w-full py-3 rounded-full text-base sm:text-lg font-medium transition-all
                 ${selectedOption
                         ? "bg-[#004E7C] text-white hover:bg-[#003656]"
                         : "bg-gray-200 text-gray-400 cursor-not-allowed"
