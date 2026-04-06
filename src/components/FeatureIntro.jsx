@@ -70,17 +70,24 @@ function FeatureIntro() {
   ];
 
   const current = steps[step];
+  const [animate, setAnimate] = useState(true);
 
   const nextStep = () => {
     if (current.type === "input") {
       localStorage.setItem("waterGoal", waterGoal);
     }
 
-    if (step < steps.length - 1) {
-      setStep(step + 1);
-    } else {
-      navigate("/login");
-    }
+    // start fade out
+    setAnimate(false);
+
+    setTimeout(() => {
+      if (step < steps.length - 1) {
+        setStep(step + 1);
+        setAnimate(true); // fade in lagi
+      } else {
+        navigate("/login");
+      }
+    }, 300); // durasi keluar
   };
 
   const [displayedText, setDisplayedText] = useState("");
@@ -113,19 +120,23 @@ function FeatureIntro() {
     }
   }, [step]);
 
+
   return (
-    <div className="min-h-screen flex flex-col justify-between items-center bg-blue-100 p-6 text-center">
+    <div className="min-h-screen flex flex-col justify-between items-center bg-[#D2EEFF] p-6 text-center">
 
 
       <div className="flex-1 flex items-center justify-center w-full">
-        <div className="bg-white rounded-2xl p-8 shadow-md max-w-md w-full flex flex-col items-center gap-6">
+        <div
+          className={`bg-white rounded-2xl p-8 shadow-md max-w-md w-full flex flex-col items-center gap-6 transition-all duration-300 ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+        >
 
           {/* === BUBBLE MODE === */}
           {current.type === "bubble" ? (
             <div className="flex flex-col items-center gap-4">
 
               {/* Bubble Chat */}
-              <div className="bg-gray-100 px-4 py-2 rounded-xl text-sm text-gray-700 relative min-h-[40px]">
+              <div className="bg-gray-100 px-4 py-2 rounded-xl text-sm text-gray-700 relative min-h-[40px] shadow">
                 {displayedText}
                 {isTyping && <span className="ml-1 animate-pulse">...</span>}
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-100 rotate-45"></div>
@@ -175,7 +186,7 @@ function FeatureIntro() {
                     setWaterGoal((prev) => Math.min(MAX_WATER, prev + 250))
                   }
                   disabled={waterGoal >= MAX_WATER}
-                  className="w-10 h-10 rounded-full bg-[#004E7C] text-white disabled:opacity-30"
+                  className="w-10 h-10 rounded-full bg-[#004A78] text-white disabled:opacity-30"
                 >
                   +
                 </button>
@@ -193,7 +204,7 @@ function FeatureIntro() {
           <div className="w-full mt-4">
             <button
               onClick={nextStep}
-              className="bg-blue-500 text-white px-6 py-3 rounded-full w-full disabled:opacity-50"
+              className="bg-[#004A78] text-white px-6 py-3 rounded-full w-full disabled:opacity-50"
               disabled={
                 (current.type === "bubble" && isTyping) ||
                 (current.type === "input" && !waterGoal)

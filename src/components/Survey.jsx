@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import QuestionCard from "./QuestionCard";
+import { motion, AnimatePresence } from "framer-motion";
 
 function Survey() {
   const [step, setStep] = useState(0);
@@ -70,10 +71,18 @@ function Survey() {
   const currentStep = stepsConfig[step];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#EAF6FF]">
-      <div className="w-full text-center relative">
+    <div className="min-h-screen flex items-center justify-center bg-[#D2EEFF]">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -40 }}
+          transition={{ duration: 0.3 }}
+          className="w-full text-center relative"
+        >
 
-        {/* {step > 1 && (
+          {/* {step > 1 && (
           <button
             onClick={handleBack}
             className="absolute top-4 left-6 px-3 py-2 rounded-full text-xl z-50"
@@ -82,80 +91,81 @@ function Survey() {
           </button>
         )} */}
 
-        {/* STEP 0: WELCOME */}
-        {step === 0 && (
-          <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
-            <h1 className="text-3xl font-semibold text-[#1D3557] mb-2">
-              Welcome to Growzy!
-            </h1>
-            <p className="text-[#457B9D] mb-8 max-w-xs">
-              Growzy will help you to track your sleep, drink, and mood everyday
-            </p>
-            <button
-              onClick={() => setStep(1)}
-              className="bg-[#004E7C] text-white px-10 py-3 rounded-full"
-            >
-              Continue
-            </button>
-          </div>
-        )}
+          {/* STEP 0: WELCOME */}
+          {step === 0 && (
+            <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
+              <h1 className="text-3xl font-semibold text-[#1D3557] mb-2">
+                Welcome to Growzy!
+              </h1>
+              <p className="text-[#457B9D] mb-8 max-w-xs">
+                Growzy will help you to track your sleep, drink, and mood everyday
+              </p>
+              <button
+                onClick={() => setStep(1)}
+                className="bg-[#004A78] text-white px-10 py-3 rounded-full"
+              >
+                Continue
+              </button>
+            </div>
+          )}
 
-        {/* STEP 1: PRE */}
-        {step === 1 && (
-          <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
-            <p className="text-sm text-gray-400 mb-2">
-              Step {step} of 5
-            </p>
-            <p className="text-[#1D3557] text-xl mb-8 max-w-sm">
-              Before we start, we'd love to learn a bit about you.
-            </p>
-            <button
-              onClick={() => setStep(2)}
-              className="bg-[#004E7C] text-white px-10 py-3 rounded-full"
-            >
-              Continue
-            </button>
-          </div>
-        )}
+          {/* STEP 1: PRE */}
+          {step === 1 && (
+            <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl">
+              <p className="text-sm text-gray-400 mb-2">
+                Step {step} of 5
+              </p>
+              <p className="text-[#1D3557] text-xl mb-8 max-w-sm">
+                Before we start, we'd love to learn a bit about you.
+              </p>
+              <button
+                onClick={() => setStep(2)}
+                className="bg-[#004A78] text-white px-10 py-3 rounded-full"
+              >
+                Continue
+              </button>
+            </div>
+          )}
 
-        {/* STEP 2–4: QUESTIONS (REUSABLE 🔥) */}
-        {currentStep && (
-          <QuestionCard
-            step={step}
-            icon={currentStep.icon}
-            question={currentStep.question}
-            options={currentStep.options}
-            selectedOption={answers[currentStep.key]}
-            onSelect={(value) =>
-              handleSelect(currentStep.key, value)
-            }
-            onNext={handleNext}
-            onBack={handleBack}
-          />
-        )}
+          {/* STEP 2–4: QUESTIONS (REUSABLE 🔥) */}
+          {currentStep && (
+            <QuestionCard
+              step={step}
+              icon={currentStep.icon}
+              question={currentStep.question}
+              options={currentStep.options}
+              selectedOption={answers[currentStep.key]}
+              onSelect={(value) =>
+                handleSelect(currentStep.key, value)
+              }
+              onNext={handleNext}
+              onBack={handleBack}
+            />
+          )}
 
-        {/* STEP 5: DONE */}
-        {step === 5 && (
-          <div className="flex flex-col items-center justify-center min-h-[400px] p-6">
-            <p className="text-sm text-gray-400 mb-2">
-              Step {step} of 5
-            </p>
-            <h2 className="text-xl mb-4">
-              Got it! Now let’s see how we can help you
-            </h2>
-            <button
-              onClick={handleFinish}
-              className="bg-[#004E7C] text-white px-10 py-3 rounded-full"
-            >
-              Continue
-            </button>
-            <p className="text-sm text-gray-400 cursor-pointer mt-3" onClick={handleBack}>
-              Back to previous question
-            </p>
-          </div>
-        )}
+          {/* STEP 5: DONE */}
+          {step === 5 && (
+            <div className="flex flex-col items-center justify-center min-h-[400px] p-6">
+              <p className="text-sm text-gray-400 mb-2">
+                Step {step} of 5
+              </p>
+              <h2 className="text-xl mb-4">
+                Got it! Now let’s see how we can help you
+              </h2>
+              <button
+                onClick={handleFinish}
+                className="bg-[#004A78] text-white px-10 py-3 rounded-full"
+              >
+                Continue
+              </button>
+              <p className="text-sm text-gray-400 cursor-pointer mt-3" onClick={handleBack}>
+                Back to previous question
+              </p>
+            </div>
+          )}
 
-      </div>
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
