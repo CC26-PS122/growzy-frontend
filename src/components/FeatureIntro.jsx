@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function FeatureIntro() {
   const [step, setStep] = useState(0);
@@ -12,19 +13,19 @@ function FeatureIntro() {
   const steps = [
     {
       type: "info",
-      icon: <img src="/images/sleepy_char.svg" className="w-16 h-16" />,
+      icon: <img src="/images/sleepy_char.svg" className="w-32 h-32" />,
       text: "Meet your little buddy. They'll change based on your habit",
       button: "Tap to say hi!",
     },
     {
       type: "bubble",
-      icon: <img src="/images/happy_char.svg" className="w-16 h-16" />,
+      icon: <img src="/images/happy_char.svg" className="w-32 h-32" />,
       text: "Hi there! This is me when you keep up with all your habits",
       button: "Continue",
     },
     {
       type: "bubble",
-      icon: <img src="/images/happy_char.svg" className="w-16 h-16" />,
+      icon: <img src="/images/happy_char.svg" className="w-32 h-32" />,
       text: "Now, let's see what affect how I look",
       button: "Continue",
     },
@@ -82,6 +83,36 @@ function FeatureIntro() {
     }
   };
 
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    let i = 0;
+    setDisplayedText("");
+
+    if (typeof current.text === "string") {
+      setIsTyping(true);
+
+      const interval = setInterval(() => {
+        i++;
+        setDisplayedText(current.text.slice(0, i));
+
+        if (i >= current.text.length) {
+          clearInterval(interval);
+
+          setTimeout(() => {
+            setIsTyping(false);
+          }, 300); // delay dikit biar lebih natural
+        }
+      }, 25);
+
+      return () => clearInterval(interval);
+    } else {
+      setDisplayedText(current.text);
+      setIsTyping(false);
+    }
+  }, [step]);
+
   return (
     <div className="min-h-screen flex flex-col justify-between items-center bg-blue-100 p-6 text-center">
 
@@ -94,9 +125,10 @@ function FeatureIntro() {
             <div className="flex flex-col items-center gap-4">
 
               {/* Bubble Chat */}
-              <div className="bg-gray-100 px-4 py-2 rounded-xl text-sm text-gray-700 relative">
-                {current.text}
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-100 rotate-45"></div>
+              <div className="bg-gray-100 px-4 py-2 rounded-xl text-sm text-gray-700 relative min-h-[40px]">
+                {displayedText}
+                {isTyping && <span className="ml-1 animate-pulse">...</span>}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-100 rotate-45"></div>
               </div>
 
               {/* Character */}
@@ -158,17 +190,30 @@ function FeatureIntro() {
             </div>
           )}
 
+          <div className="w-full mt-4">
+            <button
+              onClick={nextStep}
+              className="bg-blue-500 text-white px-6 py-3 rounded-full w-full disabled:opacity-50"
+              disabled={
+                (current.type === "bubble" && isTyping) ||
+                (current.type === "input" && !waterGoal)
+              }
+            >
+              {current.button}
+            </button>
+          </div>
+
         </div>
       </div>
 
 
-      <button
+      {/* <button
         onClick={nextStep}
         className="bg-blue-500 text-white px-6 py-3 rounded-full w-full max-w-xs"
         disabled={current.type === "input" && !waterGoal}
       >
         {current.button}
-      </button>
+      </button> */}
 
     </div>
   );
