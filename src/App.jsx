@@ -3,9 +3,10 @@ import { useState } from "react";
 
 import Intro from "./components/Intro";
 import Survey from "./components/Survey";
-import FeatureIntro from "./components/FeatureIntro"; 
+import FeatureIntro from "./components/FeatureIntro";
 import Login from "./components/login";
 import Dashboard from "./components/Dashboard";
+import Signup from "./components/signup";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,16 +15,14 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        
         <Route path="/" element={<Intro />} />
 
-        
         <Route path="/survey" element={<Survey />} />
 
-        
-        <Route path="/features" element={<FeatureIntro />} /> 
+        <Route path="/features" element={<FeatureIntro />} />
 
-        
+        <Route path="/signup" element={<Signup />} />
+
         <Route
           path="/login"
           element={<Login onLogin={() => setIsAuthenticated(true)} />}
@@ -37,8 +36,8 @@ function App() {
           }
         />
 
-        
-        <Route path="" element={<Navigate to="/" />} /> 
+
+        <Route path="" element={<Navigate to="/" />} />
 
       </Routes>
     </BrowserRouter>
