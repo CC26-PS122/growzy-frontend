@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
 
 import Intro from "./components/Intro";
@@ -8,7 +8,6 @@ import Login from "./components/login";
 import Dashboard from "./components/Dashboard";
 import Calendar from "./components/Calendar";
 import Profile from "./components/Profile";
-import Navbar from "./components/Navbar"; 
 
 function AppWrapper() {
   return (
@@ -20,54 +19,45 @@ function AppWrapper() {
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const location = useLocation(); // 🔥 BUAT CONTROL NAVBAR
-
-  // ❌ halaman yang gak perlu navbar
-  const hideNavbarRoutes = ["/", "/login", "/survey", "/features"];
 
   return (
-    <>
-      {/* 🔥 NAVBAR (KONDISIONAL) */}
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+    <Routes>
 
-      <Routes>
+      <Route path="/" element={<Intro />} />
 
-        <Route path="/" element={<Intro />} />
+      <Route path="/survey" element={<Survey />} />
 
-        <Route path="/survey" element={<Survey />} />
+      <Route path="/features" element={<FeatureIntro />} /> 
 
-        <Route path="/features" element={<FeatureIntro />} /> 
+      <Route
+        path="/login"
+        element={<Login onLogin={() => setIsAuthenticated(true)} />}
+      />
 
-        <Route
-          path="/login"
-          element={<Login onLogin={() => setIsAuthenticated(true)} />}
-        />
+      <Route
+        path="/dashboard"
+        element={
+          isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+        }
+      />
 
-        <Route
-          path="/dashboard"
-          element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
-          }
-        />
+      <Route
+        path="/calendar"
+        element={
+          isAuthenticated ? <Calendar /> : <Navigate to="/login" />
+        }
+      />
 
-        <Route
-          path="/calendar"
-          element={
-            isAuthenticated ? <Calendar /> : <Navigate to="/login" />
-          }
-        />
+      <Route
+        path="/profile"
+        element={
+          isAuthenticated ? <Profile /> : <Navigate to="/login" />
+        }
+      />
 
-        <Route
-          path="/profile"
-          element={
-            isAuthenticated ? <Profile /> : <Navigate to="/login" />
-          }
-        />
+      <Route path="*" element={<Navigate to="/" />} />
 
-        <Route path="*" element={<Navigate to="/" />} />
-
-      </Routes>
-    </>
+    </Routes>
   );
 }
 
