@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 function Calendar() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const days = ["S", "M", "T", "W", "T", "F", "S"];
@@ -41,13 +41,6 @@ function Calendar() {
 
   return (
     <div className="min-h-screen bg-blue-100 p-6">
-
-      {/* NAVBAR */}
-      <div className="bg-white rounded-full shadow flex justify-around items-center py-3 mb-6 max-w-md mx-auto">
-        <button onClick={() => navigate("/dashboard")}>🏠</button>
-        <button onClick={() => navigate("/calendar")}>📅</button>
-        <button onClick={() => navigate("/profile")}>👤</button>
-      </div>
 
       <div className="grid md:grid-cols-3 gap-4">
 
