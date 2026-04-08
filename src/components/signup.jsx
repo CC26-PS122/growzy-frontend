@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
 
 function Signup() {
     const [form, setForm] = useState({
@@ -8,6 +9,17 @@ function Signup() {
         password: "",
     });
     const navigate = useNavigate();
+    const [showVerifyNotif, setShowVerifyNotif] = useState(false);
+
+    useEffect(() => {
+        if (showVerifyNotif) {
+            const timer = setTimeout(() => {
+                navigate("/login");
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [showVerifyNotif, navigate]);
 
     const [loading, setLoading] = useState(false);
 
@@ -88,8 +100,7 @@ function Signup() {
             }
 
             console.log("SUCCESS:", data);
-            alert("Signup success!");
-            navigate("/login");
+            setShowVerifyNotif(true);
 
         } catch (err) {
             console.error(err);
@@ -146,7 +157,32 @@ function Signup() {
                 </p>
 
             </div>
+
+            {showVerifyNotif && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black/40">
+                    <div className="bg-white rounded-2xl p-6 w-[320px] text-center shadow-lg">
+
+                        <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                            Verify Your Email 📩
+                        </h3>
+
+                        <p className="text-sm text-gray-600 mb-4">
+                            We’ve sent a verification link to <b>{form.email}</b>.
+                            Please verify within 1 hour.
+                        </p>
+
+                        {/* <button
+                            onClick={() => navigate("/login")}
+                            className="bg-[#0F3D5E] text-white px-6 py-2 rounded-full text-sm"
+                        >
+                            Go to Login
+                        </button> */}
+
+                    </div>
+                </div>
+            )}
         </div >
+
     );
 }
 
