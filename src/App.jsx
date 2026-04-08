@@ -1,13 +1,15 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 import Intro from "./components/Intro";
 import Survey from "./components/Survey";
-import FeatureIntro from "./components/FeatureIntro"; 
+import FeatureIntro from "./components/FeatureIntro";
 import Login from "./components/login";
+import Signup from "./components/signup";
 import Dashboard from "./components/Dashboard";
 import Calendar from "./components/Calendar";
 import Profile from "./components/Profile";
+import Navbar from "./components/Navbar";
 
 function AppWrapper() {
   return (
@@ -18,46 +20,65 @@ function AppWrapper() {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   setIsAuthenticated(false);
+  // };
+
+  const location = useLocation();
+
+  // Halaman yang gak menampilkan navbar
+  const hideNavbarRoutes = ["/", "/login", "/signup", "/survey", "/features"];
 
   return (
-    <Routes>
+    <>
+      {/* 🔥 NAVBAR (KONDISIONAL) */}
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
-      <Route path="/" element={<Intro />} />
+      <Routes>
 
-      <Route path="/survey" element={<Survey />} />
+        <Route path="/" element={<Intro />} />
 
-      <Route path="/features" element={<FeatureIntro />} /> 
+        <Route path="/survey" element={<Survey />} />
 
-      <Route
-        path="/login"
-        element={<Login onLogin={() => setIsAuthenticated(true)} />}
-      />
+        <Route path="/features" element={<FeatureIntro />} />
 
-      <Route
-        path="/dashboard"
-        element={
-          isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
-        }
-      />
+        <Route path="/signup" element={<Signup />} />
 
-      <Route
-        path="/calendar"
-        element={
-          isAuthenticated ? <Calendar /> : <Navigate to="/login" />
-        }
-      />
+        <Route
+          path="/login"
+          element={<Login onLogin={() => setIsAuthenticated(true)} />}
+        />
 
-      <Route
-        path="/profile"
-        element={
-          isAuthenticated ? <Profile /> : <Navigate to="/login" />
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+          }
+        />
 
-      <Route path="*" element={<Navigate to="/" />} />
+        <Route
+          path="/calendar"
+          element={
+            isAuthenticated ? <Calendar /> : <Navigate to="/login" />
+          }
+        />
 
-    </Routes>
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated ? <Profile /> : <Navigate to="/login" />
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" />} />
+
+      </Routes>
+    </>
   );
 }
 

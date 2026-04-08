@@ -81,7 +81,7 @@ function FeatureIntro() {
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
-      navigate("/login");
+      navigate("/signup");
     }
   };
 
@@ -113,7 +113,7 @@ function FeatureIntro() {
       setDisplayedText(current.text);
       setIsTyping(false);
     }
-  }, [step]);
+  }, [step, current.text]);
 
 
   return (
