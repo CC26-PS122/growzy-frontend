@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
     const [form, setForm] = useState({
@@ -6,6 +7,7 @@ function Signup() {
         username: "",
         password: "",
     });
+    const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
 
@@ -19,7 +21,7 @@ function Signup() {
 
         const surveyData = JSON.parse(surveyDataRaw);
 
-        const res = await fetch("https://growzy-backend.vercel.app/api/survey/recommend", {
+        const res = await fetch("https://growzy-backend.vercel.app/api/survey/recommendation", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -43,7 +45,7 @@ function Signup() {
             daily_sleep_target: result.data.recommendation.sleep,
             daily_water_target: waterGoal || result.data.recommendation.water,
             reminder_time: "07:00",
-            name: "User",
+            name: "Moody",
             current_mood_state: result.data.recommendation.mood
         };
     };
@@ -61,24 +63,21 @@ function Signup() {
                 user_data: setupData
             });
 
-            const res = await fetch("https://growzy-backend.vercel.app/api/signup", {
+            const payload = {
+                email: form.email,
+                password: form.password,
+                username: form.username,
+                user_data: setupData
+            };
+
+            console.log("FINAL SEND:", payload);
+
+            const res = await fetch("https://growzy-backend.vercel.app/api/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email: form.email,
-                    password: form.password,
-                    username: form.username,
-
-                    baseline_sleep_hours: setupData.baseline_sleep_hours,
-                    baseline_water_ml: setupData.baseline_water_ml,
-                    daily_sleep_target: setupData.daily_sleep_target,
-                    daily_water_target: setupData.daily_water_target,
-                    reminder_time: setupData.reminder_time,
-                    name: setupData.name,
-                    current_mood_state: setupData.current_mood_state
-                })
+                body: JSON.stringify(payload)
             });
 
             const data = await res.json();
@@ -90,6 +89,7 @@ function Signup() {
 
             console.log("SUCCESS:", data);
             alert("Signup success!");
+            navigate("/login");
 
         } catch (err) {
             console.error(err);
@@ -103,25 +103,28 @@ function Signup() {
     console.log("waterGoal:", localStorage.getItem("waterGoal"));
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#AFC6D6]">
-            <div className="bg-white p-10 rounded-2xl w-full max-w-md text-center shadow-md">
+        <div className="min-h-screen bg-[#AFC6D6] flex items-center justify-center">
 
-                <h2 className="text-xl font-semibold mb-6">Create Your Account</h2>
+            <div className="bg-[#F7F7F7] w-full max-w-lg rounded-[30px] py-12 px-10 shadow-[0_10px_30px_rgba(0,0,0,0.1)] text-center">
+
+                <h2 className="text-[18px] text-gray-700 mb-6">
+                    Create Your Account
+                </h2>
 
                 <input
-                    className="w-full mb-3 p-3 rounded-full border"
+                    className="w-full mb-3 px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none"
                     placeholder="Email"
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                 />
 
                 <input
-                    className="w-full mb-3 p-3 rounded-full border"
+                    className="w-full mb-3 px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none"
                     placeholder="Create Username"
                     onChange={(e) => setForm({ ...form, username: e.target.value })}
                 />
 
                 <input
-                    className="w-full mb-6 p-3 rounded-full border"
+                    className="w-full mb-6 px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none"
                     placeholder="Create Password"
                     type="password"
                     onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -130,13 +133,20 @@ function Signup() {
                 <button
                     onClick={handleSignup}
                     disabled={loading}
-                    className="bg-blue-800 text-white px-6 py-3 rounded-full w-full"
+                    className="bg-[#0F3D5E] text-white px-8 py-2 rounded-full text-sm hover:opacity-90 transition"
                 >
-                    {loading ? "Creating..." : "Sign Up"}
+                    {loading ? "Creating..." : "Sign In"}
                 </button>
 
+                <p className="text-sm mt-4 text-gray-500">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-blue-800 cursor-pointer">
+                        Login
+                    </Link>
+                </p>
+
             </div>
-        </div>
+        </div >
     );
 }
 

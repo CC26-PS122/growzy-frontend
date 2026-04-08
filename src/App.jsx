@@ -1,18 +1,44 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 import Intro from "./components/Intro";
 import Survey from "./components/Survey";
 import FeatureIntro from "./components/FeatureIntro";
 import Login from "./components/login";
-import Dashboard from "./components/Dashboard";
 import Signup from "./components/signup";
+import Dashboard from "./components/Dashboard";
+import Calendar from "./components/Calendar";
+import Profile from "./components/Profile";
+import Navbar from "./components/Navbar";
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+function AppWrapper() {
   return (
     <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+}
+
+function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   setIsAuthenticated(false);
+  // };
+
+  const location = useLocation();
+
+  // Halaman yang gak menampilkan navbar
+  const hideNavbarRoutes = ["/", "/login", "/signup", "/survey", "/features"];
+
+  return (
+    <>
+      {/* 🔥 NAVBAR (KONDISIONAL) */}
+      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+
       <Routes>
 
         <Route path="/" element={<Intro />} />
@@ -28,7 +54,6 @@ function App() {
           element={<Login onLogin={() => setIsAuthenticated(true)} />}
         />
 
-        {/* DASHBOARD */}
         <Route
           path="/dashboard"
           element={
@@ -36,12 +61,25 @@ function App() {
           }
         />
 
+        <Route
+          path="/calendar"
+          element={
+            isAuthenticated ? <Calendar /> : <Navigate to="/login" />
+          }
+        />
 
-        <Route path="" element={<Navigate to="/" />} />
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated ? <Profile /> : <Navigate to="/login" />
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" />} />
 
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
-export default App;
+export default AppWrapper;
