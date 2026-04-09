@@ -4,15 +4,57 @@ function WaterTracker() {
   const [isOpen, setIsOpen] = useState(false);
   const [total, setTotal] = useState(0);
 
-  const target = 2000; // ml (bisa lo ubah)
-
+  const target = 2000;
   const options = [100, 200, 500];
 
   const handleAddWater = (amount) => {
     setTotal((prev) => Math.min(prev + amount, target));
   };
 
-  const progress = (total / target) * 100;
+  const handleSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Login dulu bro!");
+        return;
+      }
+
+      const res = await fetch(
+        "https://growzy-backend.vercel.app/api/auth/daily-logs",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            amount: total
+          })
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Request gagal");
+      }
+
+      const data = await res.json();
+      console.log("Response:", data);
+
+      if (data.success) {
+        alert("Water saved!");
+        setTotal(0);
+      } else {
+        alert("Gagal save!");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Error terjadi!");
+    }
+  };
+
+  const progress = target ? (total / target) * 100 : 0;
 
   return (
     <div className="bg-transparent flex items-center justify-center p-2">
@@ -25,10 +67,16 @@ function WaterTracker() {
         >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 text-xl">
-              <img src="/images/watertracker.png" className="w-4 md:w-5" />
+              <img
+                src="/images/watertracker.png"
+                alt="water"
+                className="w-4 md:w-5"
+              />
             </div>
             <div>
-              <h2 className="text-base md:text-lg font-semibold">Drink Tracker</h2>
+              <h2 className="text-base md:text-lg font-semibold">
+                Drink Tracker
+              </h2>
               <p className="text-xs md:text-sm text-gray-400">
                 Track your daily water intake
               </p>
@@ -42,8 +90,9 @@ function WaterTracker() {
 
         {/* CONTENT */}
         <div
-          className={`transition-all duration-300 overflow-hidden ${isOpen ? "max-h-[500px] mt-5" : "max-h-0"
-            }`}
+          className={`transition-all duration-300 overflow-hidden ${
+            isOpen ? "max-h-[500px] mt-5" : "max-h-0"
+          }`}
         >
 
           {/* DIVIDER */}
@@ -61,16 +110,18 @@ function WaterTracker() {
               <div
                 className="h-full bg-blue-500 transition-all duration-300"
                 style={{ width: `${progress}%` }}
-              />
+              ></div>
             </div>
 
             <div className="flex justify-between text-[10px] md:text-xs text-gray-400 mt-1">
               <span>0 mL</span>
-              <span>{total} mL/ {target}mL</span>
+              <span>
+                {total} mL / {target} mL
+              </span>
             </div>
           </div>
 
-          {/* BUTTON OPTIONS */}
+          {/* OPTIONS */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 mb-5">
             {options.map((opt) => (
               <button
@@ -81,13 +132,14 @@ function WaterTracker() {
                 {opt} mL
               </button>
             ))}
-
           </div>
 
-          {/* BUTTON SAVE*/}
+          {/* ACTION */}
           <div className="flex gap-2">
-
-            <button className="w-full bg-blue-800 text-white p-3 rounded-full">
+            <button
+              onClick={handleSave}
+              className="w-full bg-blue-800 text-white p-3 rounded-full"
+            >
               Save
             </button>
 
@@ -97,7 +149,6 @@ function WaterTracker() {
             >
               Reset
             </button>
-
           </div>
 
         </div>
