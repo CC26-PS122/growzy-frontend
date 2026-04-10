@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useState } from "react";
 
 import Intro from "./components/Intro";
 import Survey from "./components/Survey";
@@ -10,6 +9,8 @@ import Dashboard from "./components/Dashboard";
 import Calendar from "./components/Calendar";
 import Profile from "./components/Profile";
 import Navbar from "./components/Navbar";
+import GuestRoute from "./routes/GuestRoute";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function AppWrapper() {
   return (
@@ -20,58 +21,88 @@ function AppWrapper() {
 }
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
-  );
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   setIsAuthenticated(false);
-  // };
-
-  const location = useLocation();
+  // const location = useLocation();
 
   // Halaman yang gak menampilkan navbar
-  const hideNavbarRoutes = ["/", "/login", "/signup", "/survey", "/features"];
+  // const hideNavbarRoutes = ["/", "/login", "/signup", "/survey", "/features"];
 
   return (
     <>
       {/* 🔥 NAVBAR (KONDISIONAL) */}
-      {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
+      {/* {!hideNavbarRoutes.includes(location.pathname) && <Navbar />} */}
 
       <Routes>
 
-        <Route path="/" element={<Intro />} />
+        <Route
+          path="/"
+          element={
+            <GuestRoute>
+              <Intro />
+            </GuestRoute>
+          }
+        />
 
-        <Route path="/survey" element={<Survey />} />
+        <Route
+          path="/survey"
+          element={
+            <GuestRoute>
+              <Survey />
+            </GuestRoute>
+          }
+        />
 
-        <Route path="/features" element={<FeatureIntro />} />
+        <Route
+          path="/features"
+          element={
+            <GuestRoute>
+              <FeatureIntro />
+            </GuestRoute>
+          }
+        />
 
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/signup"
+          element={
+            <GuestRoute>
+              <Signup />
+            </GuestRoute>
+          }
+        />
 
         <Route
           path="/login"
-          element={<Login onLogin={() => setIsAuthenticated(true)} />}
+          element={
+            <GuestRoute>
+              <Login />
+            </GuestRoute>
+          }
         />
 
         <Route
           path="/dashboard"
           element={
-            isAuthenticated ? <Dashboard /> : <Navigate to="/login" />
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/calendar"
           element={
-            isAuthenticated ? <Calendar /> : <Navigate to="/login" />
+            <ProtectedRoute>
+              <Calendar />
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/profile"
           element={
-            isAuthenticated ? <Profile /> : <Navigate to="/login" />
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
           }
         />
 

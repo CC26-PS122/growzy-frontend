@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { fetchWithAuth } from "../utils/api";
 
 function WaterTracker() {
   const [isOpen, setIsOpen] = useState(false);
   const [total, setTotal] = useState(0);
+  const [target, setTarget] = useState(2000);
 
-  const target = 2000; // ml (bisa lo ubah)
+  // const target = 2000; // ml (bisa lo ubah)
 
   const options = [100, 200, 500];
 
@@ -14,9 +16,34 @@ function WaterTracker() {
 
   const progress = (total / target) * 100;
 
+  const handleSaveWater = async () => {
+    try {
+      await fetchWithAuth("/auth/daily-logs", {
+        method: "PUT",
+        body: JSON.stringify({
+          amount: total,
+        }),
+      });
+
+      alert("Water saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed save water");
+    }
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const res = await fetchWithAuth("/auth/profile");
+      setTarget(res.data.daily_water_target);
+    };
+
+    fetchProfile();
+  }, []);
+
   return (
     <div className="bg-transparent flex items-center justify-center p-2">
-      <div className="w-full max-w-md md:max-w-lg bg-white rounded-2xl shadow-lg p-4 md:p-6">
+      <div className="w-full bg-white rounded-2xl shadow-lg p-4 md:p-5">
 
         {/* HEADER */}
         <div
@@ -87,7 +114,9 @@ function WaterTracker() {
           {/* BUTTON SAVE*/}
           <div className="flex gap-2">
 
-            <button className="w-full bg-blue-800 text-white p-3 rounded-full">
+            <button
+              onClick={handleSaveWater}
+              className="w-full bg-blue-800 text-white p-3 rounded-full">
               Save
             </button>
 

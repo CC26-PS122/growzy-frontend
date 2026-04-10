@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useRef } from "react";
+import { useState, useRef } from "react";
+import { fetchWithAuth } from "../utils/api";
 
 function SleepTracker() {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,17 +41,6 @@ function SleepTracker() {
     }
   };
 
-  // const formatTime = (val, max) => {
-  //   if (!val) return "";
-
-  //   if (val.length === 1) return "0" + val;
-
-  //   const num = Number(val);
-  //   if (num > max) return "";
-
-  //   return val;
-  // };
-
   const calculateDuration = () => {
     if (
       bedHour === "" ||
@@ -81,6 +70,26 @@ function SleepTracker() {
     return `${h}h ${m}m`;
   };
 
+  const handleSaveSleep = async () => {
+    const sleep_start = `${bedHour}:${bedMinute}`;
+    const sleep_end = `${wakeHour}:${wakeMinute}`;
+
+    try {
+      await fetchWithAuth("/auth/daily-logs", {
+        method: "PUT",
+        body: JSON.stringify({
+          sleep_start,
+          sleep_end,
+        }),
+      });
+
+      alert("Sleep saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed save sleep");
+    }
+  };
+
   const isValid =
     bedHour !== "" &&
     bedMinute !== "" &&
@@ -90,7 +99,7 @@ function SleepTracker() {
 
   return (
     <div className="bg-transparent flex items-center justify-center p-2">
-      <div className="w-full max-w-md md:max-w-lg bg-white rounded-2xl shadow-lg p-4 md:p-5">
+      <div className="w-full bg-white rounded-2xl shadow-lg p-4 md:p-5">
 
         {/* HEADER */}
         <div
@@ -191,6 +200,7 @@ function SleepTracker() {
 
           {/* BUTTON */}
           <button
+            onClick={handleSaveSleep}
             disabled={!isValid}
             className={`w-full py-2.5 md:py-3 rounded-full text-sm md:text-base text-white transition
               ${isValid ? "bg-blue-800 active:scale-95" : "bg-gray-300 cursor-not-allowed"}`}

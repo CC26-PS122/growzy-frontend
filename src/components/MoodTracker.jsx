@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { fetchWithAuth } from "../utils/api";
 
 function MoodTracker() {
   const [moodData, setMoodData] = useState([]);
@@ -14,26 +15,36 @@ function MoodTracker() {
     { label: "Angry", icon: "/images/angry_char.svg", color: "bg-red-400", ringColor: "ring-red-400" },
   ];
 
-  const handleAddMood = () => {
+  const moodMap = {
+    Happy: 1,
+    Good: 2,
+    Neutral: 3,
+    Sad: 4,
+    Angry: 5,
+  };
+
+  const handleAddMood = async () => {
     if (!selectedMood) return;
 
-    const newData = {
-      id: Date.now(),
-      mood: selectedMood.label,
-      icon: selectedMood.icon, // ✅ INI YANG KURANG
-      note,
-      time: new Date().toLocaleTimeString(),
-    };
+    try {
+      await fetchWithAuth("/auth/daily-logs", {
+        method: "PUT",
+        body: JSON.stringify({
+          mood_id: moodMap[selectedMood.label],
+          mood_note: note,
+        }),
+      });
 
-    setMoodData([newData, ...moodData]);
-    setSelectedMood("");
-    setNote("");
+      alert("Mood saved!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed save mood");
+    }
   };
 
   return (
     <div className="bg-transparent flex items-center justify-center p-2">
-      {/* CARD */}
-      <div className="w-full max-w-md md:max-w-lg bg-white rounded-2xl shadow-lg p-4 md:p-6">
+      <div className="w-full bg-white rounded-2xl shadow-lg p-4 md:p-5">
         {/* HEADER */}
         <div
           onClick={() => setIsOpen(!isOpen)}
