@@ -6,56 +6,61 @@ function Navbar() {
   const location = useLocation();
 
   const menu = [
-    { path: "/dashboard", icon: Home, label: "Home" },
-    { path: "/calendar", icon: Calendar, label: "Calendar" },
-    { path: "/profile", icon: User, label: "Profile" },
+    { path: "/dashboard", icon: Home },
+    { path: "/calendar", icon: Calendar },
+    { path: "/profile", icon: User },
   ];
 
   return (
     <>
-      
-      <div className="hidden md:flex fixed top-0 left-0 w-full bg-white shadow px-8 py-4 justify-between items-center z-50">
-        <h1 className="font-semibold text-[#004A78]">Growzy</h1>
-
-        <div className="flex gap-6">
-          {menu.map((item, i) => {
+      {/* ===== DESKTOP ===== */}
+      <div className="w-full justify-center hidden md:flex">
+        <div className="w-full bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-md sm:gap-4 sm:px-3">
+          {menu.map((item, index) => {
             const isActive = location.pathname === item.path;
+            const Icon = item.icon;
 
             return (
               <button
-                key={i}
+                key={index}
                 onClick={() => navigate(item.path)}
-                className={`transition
-                  ${isActive
-                    ? "text-[#004A78]"
-                    : "text-gray-400 hover:text-[#004A78]"}`}
+                className={`flex items-center justify-center transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-[#004A78] text-white w-10 h-10 rounded-full shadow"
+                      : "text-gray-400 w-10 h-10"
+                  }`}
               >
-                {item.label}
+                <Icon size={18} />
               </button>
             );
           })}
         </div>
       </div>
 
-      
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[90%] max-w-md bg-white rounded-2xl shadow-lg flex justify-evenly items-center py-3 z-50 md:hidden">
-        {menu.map((item, index) => {
-          const isActive = location.pathname === item.path;
-          const Icon = item.icon;
+      {/* ===== MOBILE (UI SAMA, POSISI BAWAH) ===== */}
+      <div className="fixed bottom-0 left-0 w-full flex justify-center md:hidden pb-3">
+        <div className="w-[95%] bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-md">
+          {menu.map((item, index) => {
+            const isActive = location.pathname === item.path;
+            const Icon = item.icon;
 
-          return (
-            <button
-              key={index}
-              onClick={() => navigate(item.path)}
-              className={`flex items-center justify-center transition-all
-                ${isActive
-                  ? "bg-[#004A78] text-white w-11 h-11 rounded-full"
-                  : "text-gray-400 w-10 h-10"}`}
-            >
-              <Icon size={20} />
-            </button>
-          );
-        })}
+            return (
+              <button
+                key={index}
+                onClick={() => navigate(item.path)}
+                className={`flex items-center justify-center transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-[#004A78] text-white w-10 h-10 rounded-full shadow"
+                      : "text-gray-400 w-10 h-10"
+                  }`}
+              >
+                <Icon size={18} />
+              </button>
+            );
+          })}
+        </div>
       </div>
     </>
   );
