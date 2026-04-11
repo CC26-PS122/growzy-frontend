@@ -20,13 +20,13 @@ function FeatureIntro() {
     },
     {
       type: "bubble",
-      icon: <img src="/images/happy_char.svg" className="w-32 h-32" />,
+      icon: <img src="/images/char_happy.svg" className="w-32 h-32" />,
       text: "Hi there! This is me when you keep up with all your habits",
       button: "Continue",
     },
     {
       type: "bubble",
-      icon: <img src="/images/happy_char.svg" className="w-32 h-32" />,
+      icon: <img src="/images/char_happy.svg" className="w-32 h-32" />,
       text: "Now, let's see what affect how I look",
       button: "Continue",
     },

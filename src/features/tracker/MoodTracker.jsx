@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchWithAuth } from "../utils/api";
+import { fetchWithAuth } from "../../utils/api";
 
 function MoodTracker({ onSaved }) {
   const [moodData, setMoodData] = useState([]);
@@ -20,7 +20,7 @@ function MoodTracker({ onSaved }) {
   const handleAddMood = async () => {
     if (!selectedMood) return;
 
-    
+
     try {
       const data = await fetchWithAuth("/auth/daily-logs", {
         method: "PUT",
@@ -37,7 +37,7 @@ function MoodTracker({ onSaved }) {
         alert("Gagal save!");
         return;
       }
-      
+
       // 🔥 Update UI langsung
       const newData = {
         id: Date.now(),
@@ -46,9 +46,9 @@ function MoodTracker({ onSaved }) {
         note,
         time: new Date().toLocaleTimeString(),
       };
-      
+
       setMoodData([newData, ...moodData]);
-      
+
       // 🔥 Reset form
       setSelectedMood(null);
       setNote("");

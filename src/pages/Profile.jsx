@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import { fetchWithAuth } from "../utils/api";
 import { getMoodIcon } from "../utils/helpers";
 

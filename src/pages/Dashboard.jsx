@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import { fetchWithAuth } from "../utils/api";
 
-import SleepTracker from './SleepTracker';
-import WaterTracker from './WaterTracker';
-import MoodTracker from './MoodTracker';
+import SleepTracker from '../features/tracker/SleepTracker';
+import WaterTracker from '../features/tracker/WaterTracker';
+import MoodTracker from '../features/tracker/MoodTracker';
 
 // --- KOMPONEN LOADING POPUP ---
 const LoadingPopup = () => (

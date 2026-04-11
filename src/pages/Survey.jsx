@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import QuestionCard from "./QuestionCard";
+import QuestionCard from "../components/QuestionCard";
 import { motion, AnimatePresence } from "framer-motion";
 
 function Survey() {

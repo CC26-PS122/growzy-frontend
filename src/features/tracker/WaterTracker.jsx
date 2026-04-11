@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchWithAuth } from "../utils/api";
+import { fetchWithAuth } from "../../utils/api";
 
 function WaterTracker({ onSaved }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -152,8 +152,8 @@ function WaterTracker({ onSaved }) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 mb-5">
             {options.map((opt) => (
               <button
-              key={opt}  
-              onClick={() => handleAddWater(opt)}
+                key={opt}
+                onClick={() => handleAddWater(opt)}
                 disabled={isFull}
                 className={`border rounded-full py-2 text-sm transition
                   ${isFull ? "bg-gray-200 cursor-not-allowed" : "hover:bg-blue-50"}
