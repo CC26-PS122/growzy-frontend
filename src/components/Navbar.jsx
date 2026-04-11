@@ -14,8 +14,8 @@ function Navbar() {
   return (
     <>
       {/* ===== DESKTOP ===== */}
-      <div className="w-full justify-center hidden md:flex">
-        <div className="w-full bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-md sm:gap-4 sm:px-3">
+      <div className="w-full justify-center hidden lg:flex">
+        <div className="w-full bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-lg sm:gap-4 sm:px-3">
           {menu.map((item, index) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -39,8 +39,8 @@ function Navbar() {
       </div>
 
       {/* ===== MOBILE (UI SAMA, POSISI BAWAH) ===== */}
-      <div className="fixed bottom-0 left-0 w-full flex justify-center md:hidden pb-3">
-        <div className="w-[95%] bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-md">
+      <div className="fixed bottom-0 left-0 w-full flex justify-center lg:hidden pb-3">
+        <div className="w-[95%] bg-white rounded-full px-2 py-2 flex justify-evenly items-center gap-3 shadow-lg">
           {menu.map((item, index) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;

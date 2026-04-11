@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { fetchWithAuth } from "../utils/api";
 
-function WaterTracker() {
+function WaterTracker({ onSaved }) {
   const [isOpen, setIsOpen] = useState(false);
   const [total, setTotal] = useState(0);
   const [target, setTarget] = useState(2000);
+  const isFull = total >= target;
 
   // const target = 2000; // ml (bisa lo ubah)
 
@@ -21,11 +22,15 @@ function WaterTracker() {
       await fetchWithAuth("/auth/daily-logs", {
         method: "PUT",
         body: JSON.stringify({
-          amount: total,
+          total_water_ml: total, // 🔥 FIX (bukan "amount")
         }),
       });
 
+      // 🔥 trigger dashboard update
+      onSaved && onSaved();
+
       alert("Water saved!");
+      // console.log("TOTAL YANG DIKIRIM:", total);
     } catch (err) {
       console.error(err);
       alert("Failed save water");
@@ -33,13 +38,51 @@ function WaterTracker() {
   };
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const res = await fetchWithAuth("/auth/profile");
-      setTarget(res.data.daily_water_target);
+    const fetchData = async () => {
+      try {
+        const profileRes = await fetchWithAuth("/auth/profile");
+        setTarget(profileRes.data.daily_water_target);
+
+        const logRes = await fetchWithAuth("/auth/daily-logs");
+
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(
+          today.getMonth() + 1
+        ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+        const todayLog = logRes.data.find(
+          (log) => log.log_date === todayStr
+        );
+
+        if (todayLog?.total_water_ml) {
+          setTotal(todayLog.total_water_ml); // 🔥 ambil dari backend
+        }
+
+      } catch (err) {
+        console.error(err);
+      }
     };
 
-    fetchProfile();
+    fetchData();
   }, []);
+
+  const handleReset = async () => {
+    try {
+      setTotal(0);
+
+      await fetchWithAuth("/auth/daily-logs", {
+        method: "PUT",
+        body: JSON.stringify({
+          total_water_ml: 0,
+        }),
+      });
+
+      onSaved && onSaved(); // 🔥 biar dashboard update
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="bg-transparent flex items-center justify-center p-2">
@@ -75,9 +118,8 @@ function WaterTracker() {
 
         {/* CONTENT */}
         <div
-          className={`transition-all duration-300 overflow-hidden ${
-            isOpen ? "max-h-[500px] mt-5" : "max-h-0"
-          }`}
+          className={`transition-all duration-300 overflow-hidden ${isOpen ? "max-h-[500px] mt-5" : "max-h-0"
+            }`}
         >
 
           {/* DIVIDER */}
@@ -110,9 +152,12 @@ function WaterTracker() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3 mb-5">
             {options.map((opt) => (
               <button
-                key={opt}
-                onClick={() => handleAddWater(opt)}
-                className="border border-gray-200 rounded-full py-2 text-sm hover:bg-blue-50 transition"
+              key={opt}  
+              onClick={() => handleAddWater(opt)}
+                disabled={isFull}
+                className={`border rounded-full py-2 text-sm transition
+                  ${isFull ? "bg-gray-200 cursor-not-allowed" : "hover:bg-blue-50"}
+                `}
               >
                 {opt} mL
               </button>
@@ -129,7 +174,7 @@ function WaterTracker() {
             </button>
 
             <button
-              onClick={() => setTotal(0)}
+              onClick={handleReset}
               className="w-full border border-red-300 text-red-500 py-2 rounded-full"
             >
               Reset

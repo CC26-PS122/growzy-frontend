@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { fetchWithAuth } from "../utils/api";
 
-function SleepTracker() {
+function SleepTracker({ onSaved }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const [bedHour, setBedHour] = useState("");
@@ -80,7 +80,7 @@ function SleepTracker() {
 
   const handleSaveSleep = async () => {
     try {
-      const res = await fetchWithAuth("/auth/daily-logs", {
+      const data = await fetchWithAuth("/auth/daily-logs", {
         method: "PUT",
         body: JSON.stringify({
           sleep_start: `${bedHour}:${bedMinute}`,
@@ -89,16 +89,16 @@ function SleepTracker() {
         }),
       });
 
-      const data = await res.json();
-
       if (!data.success) {
         alert("Gagal save!");
         return;
       }
 
+      // 🔥 INI KUNCINYA
+      onSaved && onSaved();
+
       alert("Sleep saved!");
 
-      // 🔥 reset UX
       setBedHour("");
       setBedMinute("");
       setWakeHour("");

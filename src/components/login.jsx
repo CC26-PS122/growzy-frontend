@@ -54,8 +54,12 @@ function Login({ onLogin }) {
       const token = data?.data?.session?.access_token;
 
       if (!token) {
-        console.log("LOGIN RESPONSE:", data);
         alert("Login gagal (token tidak ada)");
+        return;
+      }
+
+      if (!res.ok || !data?.data?.session?.access_token) {
+        alert("Login gagal");
         return;
       }
 
@@ -63,7 +67,8 @@ function Login({ onLogin }) {
 
       console.log("TOKEN:", token);
 
-      onLogin(); // set isAuthenticated = true
+      // onLogin(); // set isAuthenticated = true
+      if (onLogin) onLogin();
       navigate("/dashboard");
 
     } catch (err) {

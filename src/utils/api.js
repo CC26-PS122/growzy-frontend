@@ -8,9 +8,16 @@ export const fetchWithAuth = async (endpoint, options = {}) => {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-            ...(options.headers || {}),
+            ...options.headers,
         },
     });
+
+    if (res.status === 401) {
+        // 🔥 AUTO LOGOUT
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+        throw new Error("Unauthorized: Token invalid or expired");
+    }
 
     const data = await res.json();
 
