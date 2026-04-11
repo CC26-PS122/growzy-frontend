@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Intro from "./components/Intro";
-import Survey from "./components/Survey";
-import FeatureIntro from "./components/FeatureIntro";
-import Login from "./components/login";
-import Signup from "./components/signup";
-import Dashboard from "./components/Dashboard";
-import Calendar from "./components/Calendar";
-import Profile from "./components/Profile";
-import Navbar from "./components/Navbar";
+import Intro from "./pages/Intro";
+import Survey from "./pages/Survey";
+import FeatureIntro from "./pages/FeatureIntro";
+import Login from "./features/auth/login";
+import Signup from "./features/auth/signup";
+import Dashboard from "./pages/Dashboard";
+import Calendar from "./pages/Calendar";
+import Profile from "./pages/Profile";
+// import Navbar from "./components/Navbar";
 import GuestRoute from "./routes/GuestRoute";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
