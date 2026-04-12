@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect } from "react";
 import { fetchPublic } from "../../utils/api";
+import { Eye, EyeOff } from "lucide-react";
 
 function Signup() {
     const [form, setForm] = useState({
@@ -16,6 +17,8 @@ function Signup() {
 
     const [showVerifyNotif, setShowVerifyNotif] = useState(false);
 
+    const [showPassword, setShowPassword] = useState(false);
+
     useEffect(() => {
         if (resendCooldown <= 0) return;
 
@@ -26,7 +29,20 @@ function Signup() {
         return () => clearInterval(timer);
     }, [resendCooldown]);
 
+    useEffect(() => {
+        const surveyDone = localStorage.getItem("surveyDone");
+
+        if (!surveyDone) {
+            navigate("/survey");
+        }
+    }, []);
+
     const handleResend = async () => {
+        if (!form.email) {
+            alert("Email is required!");
+            return;
+        }
+
         setResendLoading(true);
 
         try {
@@ -38,8 +54,6 @@ function Signup() {
             });
 
             console.log("RESEND SUCCESS:", data);
-
-            // 🔥 optional: kasih feedback UI nanti
             setResendCooldown(30);
 
         } catch (err) {
@@ -47,11 +61,6 @@ function Signup() {
             alert(err.message || "Failed to resend email");
         } finally {
             setResendLoading(false);
-        }
-
-        if (!form.email) {
-            alert("Email is required!");
-            return;
         }
     };
 
@@ -121,6 +130,10 @@ function Signup() {
             });
 
             console.log("SUCCESS:", data);
+
+            localStorage.removeItem("surveyDone");
+            localStorage.removeItem("surveyData");
+
             setShowVerifyNotif(true);
 
         } catch (err) {
@@ -164,12 +177,22 @@ function Signup() {
                         onChange={(e) => setForm({ ...form, username: e.target.value })}
                     />
 
-                    <input
-                        className="w-full px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-[#0F3D5E]/30"
-                        placeholder="Create Password"
-                        type="password"
-                        onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    />
+                    <div className="relative w-full">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Create Password"
+                            onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            className="w-full px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-[#0F3D5E]/30 pr-12"
+                        />
+
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
 
                 </div>
 

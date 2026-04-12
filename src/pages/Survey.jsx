@@ -24,6 +24,7 @@ function Survey() {
 
   const handleFinish = () => {
     localStorage.setItem("surveyData", JSON.stringify(answers));
+    localStorage.setItem("surveyDone", "true"); // 🔥 INI PENTING
     navigate("/features");
   };
 

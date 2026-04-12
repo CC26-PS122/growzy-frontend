@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { fetchPublic } from "../../utils/api";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -79,16 +82,26 @@ function Login({ onLogin }) {
             className="w-full mb-3 px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-[#0F3D5E]/30"
           />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full mb-2 px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-[#0F3D5E]/30"
-          />
+          <div className="relative w-full">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-full border border-gray-200 bg-white text-sm outline-none focus:ring-2 focus:ring-[#0F3D5E]/30 pr-12"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
-        <div className="w-full max-w-md text-right text-xs text-gray-400 mt-1 mb-4 cursor-pointer hover:underline">
+        <div className="w-full max-w-md text-right text-xs text-gray-400 mt-1 mb-6 cursor-pointer hover:underline">
           Forgot password?
         </div>
 
@@ -101,7 +114,19 @@ function Login({ onLogin }) {
 
         <p className="text-xs sm:text-sm mt-4 text-gray-500">
           Don’t have an account?{" "}
-          <Link to="/survey" className="text-gray-600 font-semibold">
+          <Link
+            to="/signup"
+            onClick={() => {
+              const surveyDone = localStorage.getItem("surveyDone");
+
+              if (surveyDone) {
+                navigate("/signup"); // 🔥 skip survey
+              } else {
+                navigate("/survey"); // 🔥 wajib survey dulu
+              }
+            }}
+            className="text-gray-600 font-semibold"
+          >
             Sign up here
           </Link>
         </p>
