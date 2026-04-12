@@ -31,7 +31,7 @@ function Login({ onLogin }) {
         })
       });
 
-      console.log("LOGIN SUCCESS:", data);
+      // console.log("LOGIN SUCCESS:", data);
 
       const token = data?.data?.session?.access_token;
 

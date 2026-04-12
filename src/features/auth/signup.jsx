@@ -17,57 +17,41 @@ function Signup() {
     const [showVerifyNotif, setShowVerifyNotif] = useState(false);
 
     useEffect(() => {
-        if (!showVerifyNotif) return;
+        if (resendCooldown <= 0) return;
 
-        const interval = setInterval(async () => {
-            try {
-                // 🔥 nanti ganti endpoint ini
-                const data = await fetchPublic("/check-verification", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        email: form.email
-                    })
-                });
+        const timer = setInterval(() => {
+            setResendCooldown((prev) => prev - 1);
+        }, 1000);
 
-                if (data.verified) {
-                    clearInterval(interval);
-                    navigate("/dashboard"); // 🔥 langsung masuk
-                }
-
-            } catch (err) {
-                console.error(err);
-            }
-        }, 3000); // cek tiap 3 detik
-
-        return () => clearInterval(interval);
-    }, [showVerifyNotif, form.email, navigate]);
+        return () => clearInterval(timer);
+    }, [resendCooldown]);
 
     const handleResend = async () => {
         setResendLoading(true);
 
         try {
-            // 🔥 NANTI GANTI INI DENGAN API ASLI
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            // await fetch("API-ENDPOINT-RESEND", {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({
-            //         email: form.email
-            //     })
-            // });
+            const data = await fetchPublic("/resend-email", {
+                method: "POST",
+                body: JSON.stringify({
+                    email: form.email
+                })
+            });
 
-            alert("Verification email resent! 📩");
+            console.log("RESEND SUCCESS:", data);
 
-            // mulai cooldown 30 detik
+            // 🔥 optional: kasih feedback UI nanti
             setResendCooldown(30);
 
         } catch (err) {
             console.error(err);
-            alert("Failed to resend email");
+            alert(err.message || "Failed to resend email");
         } finally {
             setResendLoading(false);
+        }
+
+        if (!form.email) {
+            alert("Email is required!");
+            return;
         }
     };
 
@@ -77,37 +61,39 @@ function Signup() {
         const surveyDataRaw = localStorage.getItem("surveyData");
         const waterGoal = localStorage.getItem("waterGoal");
 
-        if (!surveyDataRaw) {
-            throw new Error("Survey data not found");
+        let surveyData = null;
+
+        if (surveyDataRaw) {
+            surveyData = JSON.parse(surveyDataRaw);
         }
 
-        const surveyData = JSON.parse(surveyDataRaw);
+        let result = null;
 
-        const result = await fetchPublic("/survey/recommendation", {
-            method: "POST",
-            body: JSON.stringify({
-                drink_answer: surveyData.drink,
-                mood_answer: surveyData.mood,
-                sleep_answer: surveyData.sleep
-            })
-        });
-
-        if (!result.ok || !result.data) {
-            throw new Error("Failed to get recommendation");
+        if (surveyData) {
+            result = await fetchPublic("/survey/recommendation", {
+                method: "POST",
+                body: JSON.stringify({
+                    drink_answer: surveyData.drink,
+                    mood_answer: surveyData.mood,
+                    sleep_answer: surveyData.sleep
+                })
+            });
         }
 
         return {
-            baseline_sleep_hours: result.data.baseline.sleep,
-            baseline_water_ml: result.data.baseline.water,
-            daily_sleep_target: result.data.recommendation.sleep,
-            daily_water_target: waterGoal || result.data.recommendation.water,
+            baseline_sleep_hours: result?.data?.baseline?.sleep || 8,
+            baseline_water_ml: result?.data?.baseline?.water || 2000,
+            daily_sleep_target: result?.data?.recommendation?.sleep || 8,
+            daily_water_target: waterGoal || result?.data?.recommendation?.water || 2000,
             reminder_time: "07:00",
             name: "Moody",
-            current_mood_state: result.data.recommendation.mood
+            current_mood_state: result?.data?.recommendation?.mood || "neutral"
         };
     };
 
     const handleSignup = async () => {
+
+
         setLoading(true);
 
         try {
@@ -133,11 +119,6 @@ function Signup() {
                 method: "POST",
                 body: JSON.stringify(payload)
             });
-
-            if (!data.ok) {
-                alert("Signup failed");
-                return;
-            }
 
             console.log("SUCCESS:", data);
             setShowVerifyNotif(true);
@@ -213,6 +194,14 @@ function Signup() {
                 <div className="fixed inset-0 flex items-center justify-center bg-black/40 px-4">
                     <div className="bg-white rounded-2xl p-6 w-full max-w-sm text-center shadow-lg">
 
+                        {/* ❌ CLOSE BUTTON */}
+                        <button
+                            onClick={() => setShowVerifyNotif(false)}
+                            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-lg"
+                        >
+                            ✕
+                        </button>
+
                         <h3 className="text-base sm:text-lg font-semibold mb-2 text-gray-800">
                             Verify Your Email 📩
                         </h3>
@@ -225,7 +214,7 @@ function Signup() {
                         {/* 🔥 RESEND BUTTON */}
                         <button
                             onClick={handleResend}
-                            disabled={resendLoading || resendCooldown > 0}
+                            disabled={!form.email || resendLoading || resendCooldown > 0}
                             className="w-full bg-blue-600 text-white py-2 rounded-full text-sm hover:opacity-90 transition disabled:opacity-50"
                         >
                             {resendLoading
@@ -235,9 +224,18 @@ function Signup() {
                                     : "Resend Email"}
                         </button>
 
-                        <p className="text-xs text-gray-400 mt-3">
-                            Waiting for verification...
-                        </p>
+                        <button
+                            onClick={() => navigate("/login")}
+                            className="w-full mt-3 border border-gray-300 py-2 rounded-full text-sm hover:bg-gray-50 transition"
+                        >
+                            Go to Login
+                        </button>
+
+                        {resendCooldown > 0 && (
+                            <p className="text-xs text-gray-400 mt-2">
+                                You can resend again in {resendCooldown}s
+                            </p>
+                        )}
 
                     </div>
                 </div>
