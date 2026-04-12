@@ -147,6 +147,11 @@ function Signup() {
     console.log("surveyData:", localStorage.getItem("surveyData"));
     console.log("waterGoal:", localStorage.getItem("waterGoal"));
 
+    const isFormValid =
+        form.email.trim() &&
+        form.username.trim() &&
+        form.password.trim();
+
     return (
         <div className="min-h-screen bg-[#D2EEFF] flex items-end justify-center px-0 sm:px-4">
 
@@ -198,8 +203,12 @@ function Signup() {
 
                 <button
                     onClick={handleSignup}
-                    disabled={loading}
-                    className="w-full max-w-md bg-[#0F3D5E] text-white py-3 rounded-full text-sm hover:opacity-90 transition disabled:opacity-50"
+                    disabled={!isFormValid || loading}
+                    className={`w-full max-w-md py-3 rounded-full text-sm transition 
+                        ${!isFormValid || loading
+                            ? "bg-[#0F3D5E] opacity-50 text-white cursor-not-allowed"
+                            : "bg-[#0F3D5E] text-white hover:opacity-90"
+                        }`}
                 >
                     {loading ? "Creating..." : "Sign Up"}
                 </button>
