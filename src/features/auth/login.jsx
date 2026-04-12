@@ -101,7 +101,7 @@ function Login({ onLogin }) {
 
         <p className="text-xs sm:text-sm mt-4 text-gray-500">
           Don’t have an account?{" "}
-          <Link to="/signup" className="text-gray-600 font-semibold">
+          <Link to="/survey" className="text-gray-600 font-semibold">
             Sign up here
           </Link>
         </p>

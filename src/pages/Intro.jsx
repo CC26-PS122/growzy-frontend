@@ -6,7 +6,7 @@ function Intro() {
 
   const handleClick = () => {
     localStorage.setItem("hasSeenIntro", "true");
-    navigate("/survey");
+    navigate("/login");
   };
 
   return (
