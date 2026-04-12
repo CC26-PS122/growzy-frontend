@@ -115,7 +115,7 @@ function Signup() {
 
             console.log("FINAL SEND:", payload);
 
-            const data = await fetchPublic("auth/register", {
+            const data = await fetchPublic("/register", {
                 method: "POST",
                 body: JSON.stringify(payload)
             });
