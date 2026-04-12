@@ -17,7 +17,7 @@ function Login({ onLogin }) {
 
     console.log("LOGIN DATA:", {
       email,
-      password,
+      // password,
       emailType: typeof email,
       passwordType: typeof password
     });
