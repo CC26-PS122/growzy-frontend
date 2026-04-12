@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const BASE_URL = import.meta.env.VITE_API_URL || "https://growzy-backend.vercel.app/api";
 
 export const fetchWithAuth = async (endpoint, options = {}) => {
     const token = localStorage.getItem("token");
@@ -27,3 +27,25 @@ export const fetchWithAuth = async (endpoint, options = {}) => {
 
     return data;
 };
+
+// 🔥 TANPA TOKEN
+export const fetchPublic = async (endpoint, options = {}) => {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...options.headers,
+        },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw new Error(data.message || "API Error");
+    }
+
+    return data;
+};
+
+console.log("ENV:", import.meta.env.VITE_API_URL);
+console.log("BASE URL:", BASE_URL);

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { fetchPublic } from "../../utils/api";
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -22,35 +23,16 @@ function Login({ onLogin }) {
     });
 
     try {
-      const res = await fetch("https://growzy-backend.vercel.app/api/login", {
+      const data = await fetchPublic("/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify({
           email,
           password
         })
       });
 
-      const text = await res.text();
-      console.log("RAW RESPONSE:", text);
+      console.log("LOGIN SUCCESS:", data);
 
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { message: text };
-      }
-
-      if (!res.ok) {
-        alert(data.message || "Login gagal");
-        return;
-      }
-
-      console.log("PAYLOAD LOGIN:", { email, password });
-
-      // 🔥 SIMPAN TOKEN (kalau ada)
       const token = data?.data?.session?.access_token;
 
       if (!token) {
@@ -58,22 +40,15 @@ function Login({ onLogin }) {
         return;
       }
 
-      if (!res.ok || !data?.data?.session?.access_token) {
-        alert("Login gagal");
-        return;
-      }
-
       localStorage.setItem("token", token);
 
-      console.log("TOKEN:", token);
-
-      // onLogin(); // set isAuthenticated = true
       if (onLogin) onLogin();
+
       navigate("/dashboard");
 
     } catch (err) {
       console.error(err);
-      alert("Terjadi kesalahan");
+      alert(err.message || "Login gagal");
     }
   };
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { fetchPublic } from "../../utils/api";
 
 function Signup() {
     const [form, setForm] = useState({
@@ -10,22 +11,65 @@ function Signup() {
     });
     const navigate = useNavigate();
 
+    const [resendLoading, setResendLoading] = useState(false);
+    const [resendCooldown, setResendCooldown] = useState(0);
+
     const [showVerifyNotif, setShowVerifyNotif] = useState(false);
-    const [countdown, setCountdown] = useState(5);
 
     useEffect(() => {
-        if (showVerifyNotif && countdown > 0) {
-            const timer = setTimeout(() => {
-                setCountdown(countdown - 1);
-            }, 1000);
+        if (!showVerifyNotif) return;
 
-            return () => clearTimeout(timer);
-        }
+        const interval = setInterval(async () => {
+            try {
+                // 🔥 nanti ganti endpoint ini
+                const data = await fetchPublic("/check-verification", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: form.email
+                    })
+                });
 
-        if (countdown === 0) {
-            navigate("/login");
+                if (data.verified) {
+                    clearInterval(interval);
+                    navigate("/dashboard"); // 🔥 langsung masuk
+                }
+
+            } catch (err) {
+                console.error(err);
+            }
+        }, 3000); // cek tiap 3 detik
+
+        return () => clearInterval(interval);
+    }, [showVerifyNotif, form.email, navigate]);
+
+    const handleResend = async () => {
+        setResendLoading(true);
+
+        try {
+            // 🔥 NANTI GANTI INI DENGAN API ASLI
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            // await fetch("API-ENDPOINT-RESEND", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify({
+            //         email: form.email
+            //     })
+            // });
+
+            alert("Verification email resent! 📩");
+
+            // mulai cooldown 30 detik
+            setResendCooldown(30);
+
+        } catch (err) {
+            console.error(err);
+            alert("Failed to resend email");
+        } finally {
+            setResendLoading(false);
         }
-    }, [countdown, showVerifyNotif]);
+    };
 
     const [loading, setLoading] = useState(false);
 
@@ -39,11 +83,8 @@ function Signup() {
 
         const surveyData = JSON.parse(surveyDataRaw);
 
-        const res = await fetch("https://growzy-backend.vercel.app/api/survey/recommendation", {
+        const result = await fetchPublic("/survey/recommendation", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
             body: JSON.stringify({
                 drink_answer: surveyData.drink,
                 mood_answer: surveyData.mood,
@@ -51,9 +92,7 @@ function Signup() {
             })
         });
 
-        const result = await res.json();
-
-        if (!res.ok || !result.data) {
+        if (!result.ok || !result.data) {
             throw new Error("Failed to get recommendation");
         }
 
@@ -90,17 +129,12 @@ function Signup() {
 
             console.log("FINAL SEND:", payload);
 
-            const res = await fetch("https://growzy-backend.vercel.app/api/register", {
+            const data = await fetchPublic("/register", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify(payload)
             });
 
-            const data = await res.json();
-
-            if (!res.ok) {
+            if (!data.ok) {
                 alert("Signup failed");
                 return;
             }
@@ -188,8 +222,21 @@ function Signup() {
                             Please verify within 1 hour.
                         </p>
 
-                        <p className="text-xs text-gray-400 mt-2">
-                            Redirecting in {countdown}...
+                        {/* 🔥 RESEND BUTTON */}
+                        <button
+                            onClick={handleResend}
+                            disabled={resendLoading || resendCooldown > 0}
+                            className="w-full bg-blue-600 text-white py-2 rounded-full text-sm hover:opacity-90 transition disabled:opacity-50"
+                        >
+                            {resendLoading
+                                ? "Sending..."
+                                : resendCooldown > 0
+                                    ? `Resend in ${resendCooldown}s`
+                                    : "Resend Email"}
+                        </button>
+
+                        <p className="text-xs text-gray-400 mt-3">
+                            Waiting for verification...
                         </p>
 
                     </div>
